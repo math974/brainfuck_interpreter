@@ -16,10 +16,36 @@ class My_Brainfuck:
     create object brainfuck
     """
     def __init__(self):
-        self.mem = [0] * 30000
+        """
+        construct the the object
+        """
+        self.i_code = 0
+        self.ptr = 0
+        self.mem = [0] * 90000
         self.actions = {
-            '<' : ()
+            '<' : (None, self.opp_ptr(-1)),
+            '>' : (None, self.opp_ptr(1)),
+            '+' : (None, self.incr_val(1)),
+            '-' : (None, self.incr_val(-1))
         }
+
+    def opp_ptr(self, i):
+        """
+        pointer operation
+        """
+        self.ptr += i
+
+    def incr_val(self, i):
+        """
+        increment the value where is the pointer
+        """
+        self.mem[self.ptr] += i
+
+    def execute_progr(self):
+        """
+        run program code
+        """
+
 
 def help_programme():
     """
@@ -42,9 +68,16 @@ def buffer_file(filename):
         print("Error : The file is not a brainfuck program", file=sys.stderr)
         sys.exit(84)
     buffer = ""
-    with open(filename, "r") as filin:
-        for ligne in filin:
-            buffer += ligne
+    try:
+        with open(filename, "r") as filin:
+            for ligne in filin:
+                buffer += ligne
+    except FileNotFoundError as e:
+        print("Error : File does not exist !", file=sys.stderr)
+        sys.exit(84)
+    except IOError as e:
+        print("Error : file does not exist !", file=sys.stderr)
+        sys.exit(84)
     return buffer
 
 def delate_comment(buffer):
